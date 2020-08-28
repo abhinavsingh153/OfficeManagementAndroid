@@ -4,4 +4,12 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="new_account_text">Don\'t have an account? Create a new one</string>
+    <string name="registration">Registration</string>
+    <string name="already_member">Already a member? Login here.</string>
+    <string name="veify_otp">Verify OTP</string>
+    <string name="enter_otp">Enter the OTP we just sent to your mobile number</string>
+    <string name="timer">00:30</string>
+    <string name="resend_otp">Did\'t recieve OTP? Resend OTP</string>
+    <string name="get_started">Get started with TFEAST</string>
+    <string name="enter_number">Enter your mobile number</string>
 </resources>

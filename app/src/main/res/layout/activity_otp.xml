@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".OtpActivity">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_baseline_arrow_back_24"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/veify_otp"
+        android:textSize="@dimen/text_large"
+        android:textStyle="bold"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_otp"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/text_medium"
+        android:layout_margin="10dp"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp">
+
+    <com.alimuzaffar.lib.pin.PinEntryEditText
+        android:layout_marginTop="10dp"
+        android:id="@+id/txt_pin_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="false"
+        android:digits="1234567890"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_medium"
+        app:pinAnimationType="popIn"
+        app:pinTextBottomPadding="2dp"
+        app:pinLineStrokeSelected="1dp"
+        app:pinBackgroundIsSquare="true"
+        android:layoutDirection="ltr"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/txt_pin_entry"
+            android:id="@+id/countdown_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_medium"
+            android:text="@string/timer"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/txt_pin_entry"
+        android:id="@+id/resend_otp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_medium"
+        android:text="@string/resend_otp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentRight="true"/>
+
+
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/countrycodeTV"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:singleLine="true"
+        android:text="+91"
+        android:textSize="@dimen/text_medium"/>
+
+    <TextView
+        android:id="@+id/countrynameTV"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/countryCodeTV"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:singleLine="true"
+        android:text="India"
+        android:textSize="@dimen/text_medium"
+        android:layout_toRightOf="@+id/countryCodeTV" />
+
+</RelativeLayout>
