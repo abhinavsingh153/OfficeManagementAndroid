@@ -9,7 +9,9 @@
     <string name="veify_otp">Verify OTP</string>
     <string name="enter_otp">Enter the OTP we just sent to your mobile number</string>
     <string name="timer">00:30</string>
-    <string name="resend_otp">Did\'t recieve OTP? Resend OTP</string>
+    <string name="resend_otp">Didn\'t recieve OTP? Resend OTP</string>
     <string name="get_started">Get started with TFEAST</string>
     <string name="enter_number">Enter your mobile number</string>
+    <string name="login_successful">Login successful</string>
+    <string name="something_wrong">Something went wrong</string>
 </resources>

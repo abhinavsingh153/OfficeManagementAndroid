@@ -1,4 +1,4 @@
-package com.abhinavsingh153.officemanagement;
+package com.abhinavsingh153.officemanagement.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,6 +12,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
+
+import com.abhinavsingh153.officemanagement.R;
 
 public class OtpEditText extends androidx.appcompat.widget.AppCompatEditText {
     private float mSpace = 24; //24 dp by default, space between the lines

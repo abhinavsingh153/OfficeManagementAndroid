@@ -1,8 +1,10 @@
-package com.abhinavsingh153.officemanagement;
+package com.abhinavsingh153.officemanagement.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.abhinavsingh153.officemanagement.R;
 
 public class OtpActivity extends AppCompatActivity {
 
