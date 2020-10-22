@@ -4,18 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhinavsingh153.officemanagement.R;
 import com.abhinavsingh153.officemanagement.model.Data;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -24,9 +31,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.abhinavsingh153.officemanagement.util.Util.TASK_NOTE;
 
@@ -36,20 +46,21 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FloatingActionButton floatingActionButton;
 
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
+    private List<Data> taskList = new ArrayList<>();
+
+
+    FirebaseRecyclerOptions<Data> options;
+    FirebaseRecyclerAdapter<Data , TaskViewHolder> adapter;
+
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(TASK_NOTE).child(userId);
-
-        toolbar = findViewById(R.id.toolbar);
-        floatingActionButton = findViewById(R.id.fab_btn);
+        init();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +71,55 @@ public class HomeActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Your task app");
+
+        loadTasks();
     }
+
+    private void loadTasks(){
+
+
+         options = new FirebaseRecyclerOptions.Builder<Data>()
+                .setQuery(mDatabase, Data.class)
+                .build();
+
+         adapter = new FirebaseRecyclerAdapter<Data, TaskViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull TaskViewHolder holder, int position, @NonNull Data data) {
+                holder.mNote.setText(data.getNote());
+                holder.mTitle.setText(data.getTitle());
+                holder.mDate.setText(data.getDate());
+            }
+
+            @NonNull
+            @Override
+            public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_data , parent , false);
+                return new TaskViewHolder(view);
+            }
+        };
+
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void init() {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(TASK_NOTE).child(userId);
+
+        toolbar = findViewById(R.id.toolbar);
+        floatingActionButton = findViewById(R.id.fab_btn);
+
+        recyclerView = findViewById(R.id.recycerview);
+
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
 
     private void showAlertDialog() {
 
@@ -130,7 +189,47 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         alertDialog.dismiss();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        if (adapter!=null)
+            adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter!=null)
+            adapter.stopListening();
+    }
+
+    public static class TaskViewHolder extends RecyclerView.ViewHolder{
+
+        TextView mTitle;
+        TextView mNote;
+        TextView mDate;
+
+        public TaskViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mTitle = itemView.findViewById(R.id.title_txt);
+            mNote = itemView.findViewById(R.id.note_txt);
+            mDate = itemView.findViewById(R.id.date_txt);
+        }
+
+        private void setTitle(String title){
+            mTitle.setText(title);
+        }
+
+        private void setmNote(String note){
+            mNote.setText(note);
+        }
+
+        private void setDate(String date){
+            mDate.setText(date);
+        }
     }
 }
