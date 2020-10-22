@@ -7,10 +7,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +53,16 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private List<Data> taskList = new ArrayList<>();
 
+    //update input field
+    private EditText titleUp;
+    private EditText noteUp;
+    private Button deleteButton;
+    private Button updateButton;
+
+    //variables
+    private String title;
+    private String note;
+    private String post_key;
 
     FirebaseRecyclerOptions<Data> options;
     FirebaseRecyclerAdapter<Data , TaskViewHolder> adapter;
@@ -84,10 +97,24 @@ public class HomeActivity extends AppCompatActivity {
 
          adapter = new FirebaseRecyclerAdapter<Data, TaskViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull TaskViewHolder holder, int position, @NonNull Data data) {
+            protected void onBindViewHolder(@NonNull TaskViewHolder holder, final int position, @NonNull final Data data) {
                 holder.mNote.setText(data.getNote());
                 holder.mTitle.setText(data.getTitle());
                 holder.mDate.setText(data.getDate());
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        post_key = getRef(position).getKey();
+                        title = data.getTitle();
+                        note = data.getNote();
+
+                        showUpdateAlertDialog();
+
+                    }
+                });
+
             }
 
             @NonNull
@@ -139,6 +166,78 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveTask(title , note, alertDialog);
+            }
+        });
+
+
+
+        alertDialog.show();
+    }
+
+
+    private void showUpdateAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        LayoutInflater inflater = LayoutInflater.from(HomeActivity.this);
+        final View customView = inflater.inflate(R.layout.customupdatefield , null);
+        builder.setView(customView);
+        final AlertDialog alertDialog = builder.create();
+
+        titleUp = customView.findViewById(R.id.title_update_edttxt);
+        noteUp = customView.findViewById(R.id.note_update_edttxt);
+        updateButton = customView.findViewById(R.id.update_btn);
+        deleteButton = customView.findViewById(R.id.delete_btn);
+
+        titleUp.setText(title);
+        titleUp.setSelection(title.length());
+
+        noteUp.setText(note);
+        noteUp.setSelection(note.length());
+
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                title = titleUp.getText().toString().trim();
+                note = noteUp.getText().toString().trim();
+
+                String mDate = DateFormat.getDateInstance().format(new Date());
+
+                Data data = new Data(title , note , mDate , note);
+
+                mDatabase.child(post_key).setValue(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful())
+                        Toast.makeText(HomeActivity.this,getResources().getString(R.string.task_updated) , Toast.LENGTH_SHORT).show();
+
+                        else
+                            Toast.makeText(HomeActivity.this, getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                //saveTask(titleUp , noteUp, alertDialog);
+
+                alertDialog.dismiss();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //delete task and update recyclerview
+                mDatabase.child(post_key).removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful())
+                            Toast.makeText(HomeActivity.this, getResources().getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(HomeActivity.this, getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alertDialog.dismiss();
             }
         });
 
@@ -206,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
             adapter.stopListening();
     }
 
-    public static class TaskViewHolder extends RecyclerView.ViewHolder{
+    public class TaskViewHolder extends RecyclerView.ViewHolder{
 
         TextView mTitle;
         TextView mNote;
@@ -218,18 +317,25 @@ public class HomeActivity extends AppCompatActivity {
             mTitle = itemView.findViewById(R.id.title_txt);
             mNote = itemView.findViewById(R.id.note_txt);
             mDate = itemView.findViewById(R.id.date_txt);
-        }
 
-        private void setTitle(String title){
-            mTitle.setText(title);
         }
+    }
 
-        private void setmNote(String note){
-            mNote.setText(note);
-        }
 
-        private void setDate(String date){
-            mDate.setText(date);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mainmenu , menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(this , LoginActivity.class));
         }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -56,9 +56,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
                 if (TextUtils.isEmpty(mEmail)){
                     email.setError("Field required...");
+                    return;
                 }
                 if (TextUtils.isEmpty(mPass)){
                     password.setError("Field required...");
+                    return;
                 }
 
                 progressDialog.setMessage("Processing...");
