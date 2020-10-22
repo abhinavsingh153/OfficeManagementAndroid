@@ -14,4 +14,8 @@
     <string name="enter_number">Enter your mobile number</string>
     <string name="login_successful">Login successful</string>
     <string name="something_wrong">Something went wrong</string>
+    <string name="submit">Submit</string>
+    <string name="save">Save</string>
+    <string name="add_task">Add your daily task</string>
+    <string name="task_inserted">Task inserted</string>
 </resources>
